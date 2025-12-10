@@ -2,6 +2,7 @@
 int main(){
     std::cout<<"Hello world"<<std::endl;
     std::cout<<"init github"<<std::endl;
+    std::cout<<"branch test"<<std::endl;
     for(int i=0;i<5;i++){
         std::cout<<"Iteration "<<i<<std::endl;
     }
