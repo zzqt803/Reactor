@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
   //第一步
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if (sockfd < 0) {
+  if (sockfd == -1) {
     perror("socket");
     return -1;
   }
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     if (rn <= 0) {
       break;
     }
-    cout<<"recv: "<<rn<<" bytes"<<endl;
+    cout<<"recv: "<<buffer<<endl;
   }
 
   //第四步
