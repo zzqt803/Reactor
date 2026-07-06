@@ -38,4 +38,26 @@ int main(int argc, char *argv[]) {
     close(sockfd);
     return -1;
   }
+
+  //第三步
+  char buffer[1024];
+  for (int i = 1; i <= 3; i++) {
+    memset(buffer, 0, sizeof(buffer));
+    snprintf(buffer,sizeof(buffer),"第 %d 条信息",i);
+    if ((send(sockfd, buffer, strlen(buffer), 0)) <= 0) {
+      perror("send");
+      break;
+    }
+    cout<<"send: "<<buffer<<endl;
+
+    memset(buffer, 0, sizeof(buffer));
+    int rn = recv(sockfd, buffer, sizeof(buffer), 0);
+    if (rn <= 0) {
+      break;
+    }
+    cout<<"recv: "<<rn<<" bytes"<<endl;
+  }
+
+  //第四步
+  close(sockfd);
 }
