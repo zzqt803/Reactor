@@ -42,7 +42,6 @@ int main(int argc, char *argv[]) {
   //第三步
   char buffer[1024];
   for (int i = 1; i <= 3; i++) {
-    memset(buffer, 0, sizeof(buffer));
     snprintf(buffer, sizeof(buffer), "第 %d 条信息", i);
     if ((send(sockfd, buffer, strlen(buffer), 0)) <= 0) {
       perror("send");
@@ -50,8 +49,13 @@ int main(int argc, char *argv[]) {
     }
     cout << "send: " << buffer << endl;
 
+    //使用size-1,为'\0'留出空间
     int rn = recv(sockfd, buffer, sizeof(buffer) - 1, 0);
     if (rn <= 0) {
+      if (rn == 0)
+        cout << "Server closed connection." << endl;
+      else
+        perror("recv");
       break;
     }
     buffer[rn] = '\0';
@@ -60,4 +64,5 @@ int main(int argc, char *argv[]) {
 
   //第四步
   close(sockfd);
+  return 0;
 }

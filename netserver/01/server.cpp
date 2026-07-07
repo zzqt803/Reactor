@@ -53,15 +53,18 @@ int main(int argc, char *argv[]) {
   //第五步，通信
   char buffer[1024];
   while (true) {
-    memset(buffer, 0, sizeof(buffer));
     int rn = recv(clientsock, buffer, sizeof(buffer) - 1, 0);
     if (rn <= 0) {
+      if (rn == 0)
+        cout << "Client closed connection." << endl;
+      else
+        perror("recv");
       break;
     }
     buffer[rn] = '\0';
     cout << "recv: " << buffer << endl;
 
-    strcpy(buffer, "ok");
+    snprintf(buffer, sizeof(buffer), "ok");
     if (send(clientsock, buffer, strlen(buffer), 0) <= 0) {
       perror("send");
       break;
@@ -72,4 +75,5 @@ int main(int argc, char *argv[]) {
   //第六步，关闭
   close(listensock);
   close(clientsock);
+  return 0;
 }
