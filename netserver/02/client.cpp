@@ -48,6 +48,41 @@ public:
 
     return true;
   }
+
+  bool send(const std::string &buffer) {
+    if (socket_fd_ == -1) {
+      return false;
+    }
+
+    if (::send(socket_fd_, buffer.data(), buffer.size(), 0) <= 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  bool recv(std::string &buffer, uint32_t maxlen) {
+    if (socket_fd_ == -1) {
+      return false;
+    }
+
+    buffer.clear();
+    buffer.resize(maxlen);
+    int rn = ::recv(socket_fd_, &buffer[0], buffer.size(), 0);
+    if (rn <= 0) {
+      return false;
+    }
+    buffer.resize(rn);
+
+    return true;
+  }
+
+  ~CTcpClient() {
+    if (socket_fd_ == -1) {
+      return;
+    }
+    close(socket_fd_);
+  }
 };
 
 int main(int argc, char *argv[]) {
@@ -60,29 +95,21 @@ int main(int argc, char *argv[]) {
   client.connect(argv[1], atoi(argv[2]));
 
   //第三步
-  char buffer[1024];
+  std::string buffer;
   for (int i = 1; i <= 3; i++) {
-    snprintf(buffer, sizeof(buffer), "第 %d 条信息", i);
-    if ((send(client.socket_fd_, buffer, strlen(buffer), 0)) <= 0) {
+    buffer = "第 "+std::to_string(i)+" 条信息";
+    if (!client.send(buffer)) {
       perror("send");
       break;
     }
     std::cout << "send: " << buffer << std::endl;
-
-    //使用size-1,为'\0'留出空间
-    int rn = recv(client.socket_fd_, buffer, sizeof(buffer) - 1, 0);
-    if (rn <= 0) {
-      if (rn == 0)
-        std::cout << "Server closed connection." << std::endl;
-      else
-        perror("recv");
+    
+    if (!client.recv(buffer, 1024)) {
+      perror("recv");
       break;
     }
-    buffer[rn] = '\0';
     std::cout << "recv: " << buffer << std::endl;
   }
 
-  //第四步
-  close(client.socket_fd_);
   return 0;
 }
