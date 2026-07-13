@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
     fd_set tmp = readfds;
     int ret = select(max_fd + 1, &tmp, NULL, NULL, &tv);
 
-    if (ret == -1) {
+    if (ret <0) {
       perror("select");
       return -1;
     }
