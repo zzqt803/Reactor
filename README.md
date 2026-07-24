@@ -3,3 +3,9 @@
 - netserver/02 实现文件传输功能
 
 - nerserver/IO多路复用/select select服务端-非阻塞IO
+- nerserver/IO多路复用/poll poll服务端-非阻塞IO
+- nerserver/IO多路复用/epoll epoll服务端-非阻塞IO
+
+//包装原生fd与发生在其上的事件
+- include/Channel.h 
+- src/Channel.cpp
