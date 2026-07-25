@@ -8,16 +8,23 @@ class Channel;
 class EventLoop;
 class EpollPoller {
 private:
-  //epoll句柄
+  static const int kInitEventListSize = 16;
+  // epoll句柄
   int epollfd_;
   // epoll返回的就绪事件列表
   std::vector<struct epoll_event> events_;
   // fd到Channel的映射
   std::unordered_map<int, Channel *> channels_;
   //所属EventLoop
-  EventLoop *eventloop_;
+  EventLoop *ownerLoop_;
 
 public:
+  EpollPoller(EventLoop* loop);
+  ~EpollPoller();
+
+  EpollPoller(const EpollPoller &) = delete;
+  EpollPoller& operator=(const EpollPoller &) = delete;
+
   using ChannelList = std::vector<Channel*>;
   //进行epoll_wait，返回活跃连接
   void poll(int timeoutMs, ChannelList *activeChannels);
