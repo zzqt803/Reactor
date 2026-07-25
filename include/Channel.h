@@ -16,7 +16,7 @@ public:
   Channel(const Channel &) = delete;
   Channel &operator=(const Channel &) = delete;
 
-  //epoll_wait返回事件后，EventLoop调用此函数来处理事件
+  // epoll_wait返回事件后，EventLoop调用此函数来处理事件
   void handleEvent();
 
   // 注册回调函数
@@ -47,6 +47,10 @@ public:
     update();
   }
 
+  int fd() const { return fd_; }
+  int events() const { return events_; }
+  void setRevent(int revt){ revents_= revt;}
+
 private:
   //调用loop的函数更新epoll状态
   void update();
@@ -74,5 +78,5 @@ private:
   EventCallback errorCallback_;
 
   //该channel所属的事件循环
-  EventLoop* loop_;
+  EventLoop *loop_;
 };
