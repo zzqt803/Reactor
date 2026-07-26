@@ -1,3 +1,0 @@
-/home/zqt/Public/PersonalProj/Reactor/build/CMakeFiles/net_test.dir
-/home/zqt/Public/PersonalProj/Reactor/build/CMakeFiles/edit_cache.dir
-/home/zqt/Public/PersonalProj/Reactor/build/CMakeFiles/rebuild_cache.dir
