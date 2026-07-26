@@ -3,12 +3,13 @@
 #include "EventLoop.h"
 
 #include <sys/epoll.h>
+#include <unistd.h>
 
 EpollPoller::EpollPoller(EventLoop *loop)
     : ownerLoop_(loop), epollfd_(::epoll_create1(EPOLL_CLOEXEC)),
       events_(kInitEventListSize) {}
 
-EpollPoller::~EpollPoller() {}
+EpollPoller::~EpollPoller() { ::close(epollfd_); }
 
 void EpollPoller::update(int operation, Channel *channel) {
   struct epoll_event ev;
