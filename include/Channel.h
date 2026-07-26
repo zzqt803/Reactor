@@ -49,7 +49,7 @@ public:
 
   int fd() const { return fd_; }
   int events() const { return events_; }
-  void setRevent(int revt){ revents_= revt;}
+  void setRevent(int revt) { revents_ = revt; }
 
 private:
   //调用loop的函数更新epoll状态
@@ -59,6 +59,10 @@ private:
   static const int kNoneEvent;
   static const int kReadEvent;
   static const int kWriteEvent;
+
+  //该channel所属的事件循环
+  EventLoop *loop_;
+
   //原生文件描述符
   int fd_;
 
@@ -76,7 +80,4 @@ private:
   EventCallback closeCallback_;
 
   EventCallback errorCallback_;
-
-  //该channel所属的事件循环
-  EventLoop *loop_;
 };

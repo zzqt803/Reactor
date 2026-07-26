@@ -6,7 +6,9 @@
 
 EpollPoller::EpollPoller(EventLoop *loop)
     : ownerLoop_(loop), epollfd_(::epoll_create1(EPOLL_CLOEXEC)),
-      events(kInitEventListSize) {}
+      events_(kInitEventListSize) {}
+
+EpollPoller::~EpollPoller() {}
 
 void EpollPoller::update(int operation, Channel *channel) {
   struct epoll_event ev;
@@ -18,9 +20,9 @@ void EpollPoller::update(int operation, Channel *channel) {
 
 void EpollPoller::poll(int timeoutMs, ChannelList *activeChannels) {
   int numEvents =
-      ::epoll_wait(epollfd_, &*events.begin(), events.size(), timeoutMs);
+      ::epoll_wait(epollfd_, &*events_.begin(), events_.size(), timeoutMs);
   if (numEvents > 0) {
-    fillActiveChannels(numsEvents, activeChannels);
+    fillActiveChannels(numEvents, activeChannels);
   }
 }
 
@@ -36,17 +38,16 @@ void EpollPoller::fillActiveChannels(int numEvents,
 
 void EpollPoller::updateChannel(Channel *channel) {
   int fd = channel->fd();
-  if (channels_.find(fd) != channels.end()) {
+  if (channels_.find(fd) != channels_.end()) {
     update(EPOLL_CTL_MOD, channel);
   } else {
     channels_[fd] = channel;
-    update(EPOLL_CTL_ADD,channel);
+    update(EPOLL_CTL_ADD, channel);
   }
-
 }
 
 void EpollPoller::removeChannel(Channel *channel) {
   int fd = channel->fd();
   update(EPOLL_CTL_DEL, channel);
-  channels.erase(fd);
+  channels_.erase(fd);
 }
