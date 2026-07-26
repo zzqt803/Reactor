@@ -21,6 +21,7 @@ set(SOURCE_FILES
     src/EventLoop.cpp
     src/Channel.cpp
     src/EpollPoller.cpp
+    src/Buffer.cpp
 )
 
 # add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
