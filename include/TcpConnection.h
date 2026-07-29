@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Channel.h"
 #include "Buffer.h"
 
+class Channel;
+class Socket;
+class EventLoop;
 class TcpConnection {
 public:
   TcpConnection();
