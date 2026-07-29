@@ -17,6 +17,8 @@ add_compile_options(
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
+find_package(spdlog REQUIRED)
+
 set(SOURCE_FILES
     src/EventLoop.cpp
     src/Channel.cpp
@@ -27,3 +29,5 @@ set(SOURCE_FILES
 # add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
 
 add_executable(net_test main.cpp ${SOURCE_FILES})
+
+target_link_libraries(net_test PRIVATE spdlog::spdlog)
