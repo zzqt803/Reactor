@@ -7,7 +7,6 @@
 using std::string;
 class InetAddr {
 public:
-  InetAddr() = default;
   ~InetAddr() = default;
 
   explicit InetAddr(uint16_t port = 0, bool looopbackonly = false,

@@ -50,7 +50,7 @@ public:
   int fd() const { return fd_; }
   int events() const { return events_; }
   void setRevent(int revt) { revents_ = revt; }
-
+  void remove();
 private:
   //调用loop的函数更新epoll状态
   void update();

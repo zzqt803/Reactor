@@ -1,13 +1,12 @@
 #pragma once
 
-#include <vector>
 #include <algorithm>
+#include <vector>
 
 using std::size_t;
 using std::vector;
 class Buffer {
 public:
-  Buffer() = default;
   ~Buffer() = default;
   static const size_t kCheapPrepend = 8;
   static const size_t kInitialSize = 1024;
@@ -28,9 +27,8 @@ public:
 
   size_t prependableBytes() const { return readerIndex_; }
 
-  
-
-private : vector<char> buffer_;
+private:
+  vector<char> buffer_;
   //可读数据起始位置
   size_t readerIndex_;
   //可写数据起始位置

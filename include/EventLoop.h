@@ -16,6 +16,7 @@ public:
   void loop();
 
   void updateChannel(Channel *);
+  void removeChannel(Channel *);
 
 private:
   using ChannelList = std::vector<Channel *>;
