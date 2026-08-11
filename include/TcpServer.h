@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Callbacks.h"
+#include "InetAddr.h"
 #include "TcpConnection.h"
 
 #include <map>
-#include <netinet/in.h>
+
 
 class Acceptor;
 class Eventloop;
@@ -15,6 +15,7 @@ public:
   typedef std::function<void(EventLoop *)> ThreadInitCallback;
   enum Option { kNoReusePort, kReusePort };
 
+  //禁止copy
   TcpServer(const TcpServer &) = delete;
   TcpServer &operator=(const TcpServer &) = delete;
 
@@ -43,6 +44,10 @@ public:
   }
 
 private:
+  void newConnection(int sockfd, const InetAddr &peerAddr);
+  void removeConnection(const TcpConnectionPtr &conn);
+  void removeConnectionInLoop(const TcpConnectionPtr &conn);
+  
   using ConnectionMap = std::map<string, TcpConnectionPtr>;
 
   EventLoop *loop_;
@@ -56,5 +61,7 @@ private:
   WriteCompleteCallback writeCompleteCallback_;
   ThreadInitCallback threadInitCallback_;
 
+  //atomic<int> started_;
+  int nextConnId_;
   ConnectionMap connections_;
 };

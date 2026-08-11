@@ -3,6 +3,10 @@
 #include <memory>
 #include <functional>
 
+using std::placeholders::_1;
+using std::placeholders::_2;
+using std::placeholders::_3;
+
 class Buffer;
 class TcpConnection;
 typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;

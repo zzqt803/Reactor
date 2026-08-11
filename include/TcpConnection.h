@@ -16,6 +16,8 @@ public:
   TcpConnection(const TcpConnection &) = delete;
   TcpConnection &operator=(const TcpConnection &) = delete;
 
+  EventLoop* getLoop() const{return loop_;}
+
 private:
   EventLoop *loop_;
   bool reading_;

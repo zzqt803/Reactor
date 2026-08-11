@@ -10,7 +10,7 @@ class EventLoop;
 class InetAddr;
 class Acceptor {
 
-  using NewConnectionCallback = std::function<void(int sockfd)>;
+  using NewConnectionCallback = std::function<void(int sockfd,const InetAddr&)>;
 
 public:
   Acceptor(EventLoop *loop,const InetAddr& listenAddr,bool reuseport);

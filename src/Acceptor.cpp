@@ -29,7 +29,7 @@ void Acceptor::handleRead() {
   int connfd = acceptSocket_.accept(&peeraddr);
   if (connfd >= 0) {
     if (newConnectionCallback_) {
-      newConnectionCallback_(connfd);
+      newConnectionCallback_(connfd,peeraddr);
     } else {
       Socket::close(connfd);
     }
