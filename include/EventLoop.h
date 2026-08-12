@@ -29,6 +29,7 @@ public:
   void wakeup();
   void updateChannel(Channel *);
   void removeChannel(Channel *);
+  bool hasChannel(Channel *);
 
   void assertInLoopThread() {
     if (!isInLoopThread()) {
