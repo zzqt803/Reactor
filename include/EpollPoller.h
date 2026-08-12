@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 
+
 struct epoll_event;
 class Channel;
 class EventLoop;
@@ -22,13 +23,18 @@ public:
   //从epoll中移除该连接
   void removeChannel(Channel *channel);
 
+  bool hasChannel(Channel *channel);
+
+  void assertInLoopThread() const;
+
+
 private:
+  static const int kInitEventListSize = 16;
+  static const char* operationToString(int op);
   //将内核事件更新到列表中
   void fillActiveChannels(int numEvents, ChannelList *activeChannels) const;
   //封装epoll_ctl
   void update(int operation, Channel *channel);
-
-  static const int kInitEventListSize = 16;
 
   //所属EventLoop
   EventLoop *ownerLoop_;
