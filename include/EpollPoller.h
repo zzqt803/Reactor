@@ -23,7 +23,7 @@ public:
   //从epoll中移除该连接
   void removeChannel(Channel *channel);
 
-  bool hasChannel(Channel *channel);
+  bool hasChannel(Channel *channel) const;
 
   void assertInLoopThread() const;
 

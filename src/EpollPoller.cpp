@@ -120,6 +120,12 @@ void EpollPoller::removeChannel(Channel *channel) {
   channel->set_index(kNew);
 }
 
+bool EpollPoller::hasChannel(Channel *channel) const {
+  assertInLoopThread();
+  auto it = channels_.find(channel->fd());
+  return it!=channels_.end() && it->second == channel;
+}
+
 void EpollPoller::update(int operation, Channel *channel) {
   struct epoll_event ev;
   memset(&ev, 0, sizeof ev);
