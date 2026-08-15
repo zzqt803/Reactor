@@ -100,6 +100,7 @@ private:
   bool tied_;
   bool eventHandling_;
   bool addedToLoop_;
+  bool logHup_;
 
   //对应事件发生时的回调函数
   EventCallback readCallback_;

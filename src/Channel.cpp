@@ -1,5 +1,6 @@
 #include "Channel.h"
 #include "EventLoop.h"
+#include "util/Logger.h"
 
 #include <assert.h>
 #include <memory>
@@ -13,7 +14,7 @@ const int Channel::kWriteEvent = EPOLLOUT;
 
 Channel::Channel(EventLoop *loop, int fd)
     : loop_(loop), fd_(fd), events_(0), revents_(0), index_(-1), tied_(false),
-      eventHandling_(false), addedToLoop_(false) {}
+      eventHandling_(false), addedToLoop_(false),logHup_(true) {}
 
 Channel::~Channel() {
   //析构时不要close(fd),fd由Socket类进行RAII管理
@@ -39,6 +40,40 @@ void Channel::handleEvent() {
   } else {
     handleEventWithGuard();
   }
+}
+
+void Channel::handleEventWithGuard() {
+  eventHandling_ = true;
+  LOG_TRACE("{}", reventsToString());
+  // 1. 对端挂断 (EPOLLHUP) 且当前缓冲区内没有数据可读 (EPOLLIN)
+  if ((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN)) {
+    if (logHup_) {
+      LOG_WARN("fd = {} Channel::handle_event() EPOLLHUP",fd_);
+    }
+    if (closeCallback_)
+      closeCallback_();
+  }
+
+  // 2. 错误事件 (EPOLLERR)
+  if (revents_ & EPOLLERR) {
+    if (errorCallback_)
+      errorCallback_();
+  }
+
+  // 3. 可读事件：包含普通数据 (EPOLLIN)、带外数据 (EPOLLPRI) 以及对端关闭半连接
+  // (EPOLLRDHUP)
+  if (revents_ & (EPOLLIN | EPOLLPRI | EPOLLRDHUP)) {
+    if (readCallback_)
+      readCallback_();
+  }
+
+  // 4. 可写事件 (EPOLLOUT)
+  if (revents_ & EPOLLOUT) {
+    if (writeCallback_)
+      writeCallback_();
+  }
+
+  eventHandling_ = false;
 }
 
 void Channel::remove() {
