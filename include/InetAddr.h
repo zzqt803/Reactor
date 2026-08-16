@@ -23,8 +23,15 @@ public:
   string toIpPort() const;
   uint16_t port() const;
 
-private:
-  struct sockaddr_in addr_;
-  struct sockaddr_in6 addr6_;
+  uint32_t ipv4NetEndian() const;
+  uint16_t portNetEndian() const { return addr_.sin_port; }
+  
+  const struct sockaddr *getSockAddr() const;
+  void setSockAddrInet6(const struct sockaddr_in6 &addr6) { addr6_ = addr6; }
 
+private:
+  union {
+    struct sockaddr_in addr_;
+    struct sockaddr_in6 addr6_;
+  };
 };
