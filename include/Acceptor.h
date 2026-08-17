@@ -32,8 +32,6 @@ private:
   void handleRead();
 
   EventLoop *loop_;
-  //监听文件描述符
-  int acceptFd_;
   //管理socket
   Socket acceptSocket_;
   //包装监听文件描述符
@@ -43,5 +41,7 @@ private:
   NewConnectionCallback newConnectionCallback_;
 
   bool listening_;
+
+  int idleFd_;
   
 };
