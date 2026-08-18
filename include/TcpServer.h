@@ -3,8 +3,8 @@
 #include "InetAddr.h"
 #include "TcpConnection.h"
 
+#include <atomic>
 #include <map>
-
 
 class Acceptor;
 class Eventloop;
@@ -44,10 +44,12 @@ public:
   }
 
 private:
+  //给Acceptor使用
   void newConnection(int sockfd, const InetAddr &peerAddr);
+  //给TcpConnection的close使用
   void removeConnection(const TcpConnectionPtr &conn);
   void removeConnectionInLoop(const TcpConnectionPtr &conn);
-  
+
   using ConnectionMap = std::map<string, TcpConnectionPtr>;
 
   EventLoop *loop_;
@@ -56,12 +58,13 @@ private:
   std::unique_ptr<Acceptor> acceptor_;
   std::shared_ptr<EventLoopThreadPool> threadPool_;
 
+  //
   ConnectionCallback connectionCallback_;
   MessageCallback messageCallback_;
   WriteCompleteCallback writeCompleteCallback_;
   ThreadInitCallback threadInitCallback_;
 
-  //atomic<int> started_;
+  std::atomic<int> started_;
   int nextConnId_;
   ConnectionMap connections_;
 };
