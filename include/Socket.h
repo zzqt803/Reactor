@@ -15,6 +15,10 @@ public:
 
   int fd() const { return sockfd_; }
 
+  bool getTcpInfo(struct tcp_info *) const;
+
+  bool getTcpInfoString(char *buf, int len) const;
+  
   void bindAddress(const InetAddr &localaddr);
 
   void listen();
@@ -60,16 +64,21 @@ public:
   static void toIpPort(char *buf, size_t size, const struct sockaddr *addr);
   static void toIp(char *buf, size_t size, const struct sockaddr *addr);
 
-  static void fromIpPort(const char *ip, u_int16_t port, struct sockaddr_in *addr);
-  static void fromIpPort(const char *ip, u_int16_t port, struct sockaddr_in6 *addr);
+  static void fromIpPort(const char *ip, u_int16_t port,
+                         struct sockaddr_in *addr);
+  static void fromIpPort(const char *ip, u_int16_t port,
+                         struct sockaddr_in6 *addr);
 
   static const struct sockaddr *sockaddr_cast(const struct sockaddr_in *addr);
   static const struct sockaddr *sockaddr_cast(const struct sockaddr_in6 *addr);
   static struct sockaddr *sockaddr_cast(struct sockaddr_in6 *addr);
 
-  static const struct sockaddr_in *sockaddr_in_cast(const struct sockaddr *addr);
+  static const struct sockaddr_in *
+  sockaddr_in_cast(const struct sockaddr *addr);
   static const struct sockaddr_in6 *
   sockaddr_in6_cast(const struct sockaddr *addr);
+
+  static int getSocketError(int sockfd);
 
   static struct sockaddr_in6 getLocalAddr(int sockfd);
   static struct sockaddr_in6 getPeerAddr(int sockfd);
