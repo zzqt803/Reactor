@@ -1,12 +1,12 @@
 #pragma once
 
-#include <functional>
-#include <string>
-#include <vector>
-#include <memory>
-#include <thread>
-#include <mutex>
 #include <condition_variable>
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
 
 class EventLoop;
 
@@ -27,6 +27,7 @@ private:
   void threadFunc();
 
   EventLoop *loop_;
+  std::string name_;
   bool exiting_;
   std::thread thread_;
   std::mutex mutex_;
@@ -36,7 +37,6 @@ private:
 
 class EventLoopThreadPool {
 public:
-
   //禁止copy
   EventLoopThreadPool(const EventLoopThreadPool &) = delete;
   EventLoopThreadPool &operator=(const EventLoopThreadPool &) = delete;
@@ -50,7 +50,7 @@ public:
   EventLoop *getNextLoop();
 
   //通过hash获取相同loop
-  EventLoop *getLoopForHash();
+  EventLoop *getLoopForHash(size_t);
 
   std::vector<EventLoop *> getAllLoops();
 
@@ -65,5 +65,5 @@ private:
   int numThreads_;
   int next_;
   std::vector<std::unique_ptr<EventLoopThread>> threads_;
-  std::vector<EventLoop*> loops_;
+  std::vector<EventLoop *> loops_;
 };
