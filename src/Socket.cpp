@@ -124,7 +124,7 @@ void Socket::close(int sockfd) {
 }
 
 int Socket::accept(int sockfd, struct sockaddr_in6 *addr) {
-  socklen_t addrlen = static_cast<socklen_t>(sizeof addr);
+  socklen_t addrlen = static_cast<socklen_t>(sizeof(*addr));
   int connfd = ::accept4(sockfd, sockaddr_cast(addr), &addrlen,
                          SOCK_NONBLOCK | SOCK_CLOEXEC);
   if (connfd < 0) {
