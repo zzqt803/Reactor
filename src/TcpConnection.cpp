@@ -29,12 +29,13 @@ TcpConnection::TcpConnection(EventLoop *loop, const string &nameArg, int sockfd,
   channel_->setWriteCallback(std::bind(&TcpConnection::handleWrite, this));
   channel_->setCloseCallback(std::bind(&TcpConnection::handleClose, this));
   channel_->setErrorCallback(std::bind(&TcpConnection::handleError, this));
-  LOG_DEBUG("TcpConnection::ctor[{}] at {} fd= {}", name_, this, sockfd);
+  LOG_DEBUG("TcpConnection::ctor[{}] at {} fd= {}", name_, (void *)this,
+            sockfd);
   socket_->setKeepAlive(true);
 }
 
 TcpConnection::~TcpConnection() {
-  LOG_DEBUG("TcpConnection::dtor[{}] at {} state={}", name_, this,
+  LOG_DEBUG("TcpConnection::dtor[{}] at {} state={}", name_, (void *)this,
             stateToString());
   assert(state_ == kDisconnected);
 }

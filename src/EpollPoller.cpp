@@ -4,6 +4,7 @@
 #include "util/Logger.h"
 
 #include <cstring>
+#include <sstream>
 #include <sys/epoll.h>
 #include <unistd.h>
 
@@ -25,6 +26,16 @@ EpollPoller::~EpollPoller() { ::close(epollfd_); }
 
 void EpollPoller::poll(int timeoutMs, ChannelList *activeChannels) {
   LOG_TRACE("fd total count {}", channels_.size());
+
+  // debug
+  std::ostringstream fds;
+  fds << "[";
+  for (auto [fd, _] : channels_) {
+    fds << " " << fd;
+  }
+  fds << "]";
+  LOG_DEBUG("have fds {}", fds.str());
+
   int numEvents =
       ::epoll_wait(epollfd_, &*events_.begin(), events_.size(), timeoutMs);
   int saveErrno = errno;
@@ -61,8 +72,8 @@ void EpollPoller::fillActiveChannels(int numEvents,
 void EpollPoller::updateChannel(Channel *channel) {
   assertInLoopThread();
   const int index = channel->index();
-  LOG_TRACE("fd = {} index= {} events = {}", channel->fd(), channel->events(),
-            index);
+  LOG_TRACE("fd= {} index= {} events= {}", channel->fd(), index,
+            channel->events());
   // 说明当前它不在epoll 内核监听列表中
   if (index == kNew || index == kDeleted) {
     int fd = channel->fd();
@@ -123,7 +134,11 @@ void EpollPoller::removeChannel(Channel *channel) {
 bool EpollPoller::hasChannel(Channel *channel) const {
   assertInLoopThread();
   auto it = channels_.find(channel->fd());
-  return it!=channels_.end() && it->second == channel;
+  return it != channels_.end() && it->second == channel;
+}
+
+void EpollPoller::assertInLoopThread() const {
+  ownerLoop_->assertInLoopThread();
 }
 
 void EpollPoller::update(int operation, Channel *channel) {
@@ -147,14 +162,14 @@ void EpollPoller::update(int operation, Channel *channel) {
 
 const char *EpollPoller::operationToString(int op) {
   switch (op) {
-    case EPOLL_CTL_ADD:
-      return "ADD";
-    case EPOLL_CTL_DEL:
-      return "DEL";
-    case EPOLL_CTL_MOD:
-      return "MOD";
-    default:
-      assert(false && "ERROR op");
-      return "Unknown Operation";
+  case EPOLL_CTL_ADD:
+    return "ADD";
+  case EPOLL_CTL_DEL:
+    return "DEL";
+  case EPOLL_CTL_MOD:
+    return "MOD";
+  default:
+    assert(false && "ERROR op");
+    return "Unknown Operation";
   }
 }

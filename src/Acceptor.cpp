@@ -29,6 +29,7 @@ void Acceptor::listen() {
   listening_ = true;
   acceptSocket_.listen();
   acceptChannel_.enableReading();
+  LOG_TRACE("Acceptor::listen listenfd={}", acceptChannel_.fd());
 }
 
 void Acceptor::handleRead() {

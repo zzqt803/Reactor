@@ -32,11 +32,12 @@ EventLoop::EventLoop()
       callingPendingFunctors_(false), iteration_(0),
       threadId_(CurrentThread::tid()),
       poller_(std::make_unique<EpollPoller>(this)), wakeupFd_(createEventfd()),
+      wakeupChannel_(new Channel(this, wakeupFd_)),
       currentActiveChannel_(nullptr) {
-  LOG_DEBUG("EventLoop created {0} in thread {1}", this, threadId_);
+  LOG_DEBUG("EventLoop created {0} in thread {1}", (void *)this, threadId_);
   if (t_loopInThisThread) {
     LOG_FATAL("Another EventLoop {0} exsits in this thread {1}",
-              t_loopInThisThread, threadId_);
+              (void *)t_loopInThisThread, threadId_);
   } else {
     t_loopInThisThread = this;
   }
@@ -45,7 +46,7 @@ EventLoop::EventLoop()
 }
 
 EventLoop::~EventLoop() {
-  LOG_DEBUG("EventLoop {0} of thread {1} destructs in thread {2}", this,
+  LOG_DEBUG("EventLoop {0} of thread {1} destructs in thread {2}", (void *)this,
             threadId_, CurrentThread::tid());
   wakeupChannel_->disableAll();
   wakeupChannel_->remove();
@@ -73,7 +74,7 @@ void EventLoop::loop() {
     doPendingFunctors();
   }
 
-  LOG_TRACE("EventLoop {} stop looping", this);
+  LOG_TRACE("EventLoop {} stop looping", (void *)this);
   looping_ = false;
 }
 
@@ -129,7 +130,7 @@ bool EventLoop::hasChannel(Channel *channel) {
 void EventLoop::abortNotInLoopThread() {
   LOG_FATAL("EventLoop::abortNotInLoopThread - EventLoop {} was created in "
             "thead {}, curent thread id= {}",
-            this, threadId_, CurrentThread::tid());
+            (void *)this, threadId_, CurrentThread::tid());
 }
 
 void EventLoop::wakeup() {

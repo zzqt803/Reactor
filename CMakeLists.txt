@@ -20,10 +20,16 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 find_package(spdlog REQUIRED)
 
 set(SOURCE_FILES
-    src/EventLoop.cpp
-    src/Channel.cpp
-    src/EpollPoller.cpp
+    src/Acceptor.cpp
     src/Buffer.cpp
+    src/Channel.cpp        
+    src/EpollPoller.cpp
+    src/EventLoop.cpp
+    src/EventLoopThreadPool.cpp
+    src/InetAddr.cpp
+    src/Socket.cpp
+    src/TcpConnection.cpp
+    src/TcpServer.cpp
 )
 
 # add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})
